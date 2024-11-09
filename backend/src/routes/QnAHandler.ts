@@ -8,7 +8,6 @@ import {
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { decode, sign, verify } from "hono/jwt";
 import { getCookie } from "hono/cookie";
-import axios from "axios";
 export const quest = new Hono<{
   Bindings: {
     DATABASE_URL: string;
@@ -79,8 +78,13 @@ quest.post("/question", async (c) => {
       console.log(creating)
     }
 
-    const prediction = await axios.post("http:localhost:8000",{
-      data : arr,
+    // const prediction = await axios.post("http:localhost:8000",{
+    //   data : arr,
+    // })
+
+    const prediction = await fetch("http://localhost:3000",{
+      method: "POST",
+      body : JSON.stringify({data : arr})
     })
 
     //console.log(inputs);

@@ -50,4 +50,8 @@ def predict_labels(input_data):
 @app.post("/predict")
 async def predict(input_data: ModelInput):
     labels = predict_labels(input_data.features)
+    print("labels" , labels)
+    print("input_data", input_data)
+    print("modelInput" , ModelInput) 
     return {"predicted_labels": labels}
+    

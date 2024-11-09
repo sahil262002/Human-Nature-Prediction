@@ -50,7 +50,7 @@ record.get("/:id", async (c) => {
     datasourceUrl: c.env?.DATABASE_URL,
   }).$extends(withAccelerate());
 
-  const recordid = c.req.param('id');
+  const recordid = await c.req.param('id');
   
   try{
     if(!recordid){

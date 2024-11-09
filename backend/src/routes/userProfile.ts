@@ -8,7 +8,7 @@ import {
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { decode, sign, verify } from "hono/jwt";
 import { getCookie } from "hono/cookie";
-import bcrypt from "bcrypt";
+import { signPassword, verifyPassword } from "./encryption";
 
 export const profile = new Hono<{
   Bindings: {
@@ -108,9 +108,10 @@ profile.post("/:id/change", async (c) => {
       if (!user) {
         return c.json({ message: "user doest not exist" });
       }
-      const matched = await bcrypt.compare(
+      const matched = await verifyPassword(
         inputs.password,
-        user.password
+        user.password,
+        10
       );
       if (matched) {
         await c.set("accessFlags", true);
@@ -152,15 +153,22 @@ profile.put("/:id/changepassword", async (c) => {
       if (!user) {
         return c.json({ message: "user not found" });
       }
-      const match = await bcrypt.compare(
+      const match = await verifyPassword(
         oldPassword,
-        user.password
+        user.password,
+        10
       );
+
       if (match) {
-        const hashedPassword = await bcrypt.hash(
+        const hashedPassword: any = await signPassword(
           newPassword,
           10
         );
+        if (!hashedPassword) {
+          return c.json({
+            message: hashedPassword,
+          });
+        }
         const updating = await prisma.user.update({
           where: { id: userid },
           data: { password: hashedPassword },
@@ -172,9 +180,12 @@ profile.put("/:id/changepassword", async (c) => {
           });
         }
       }
-      return c.json({ message: "there is some error from our side please try later" });
+      return c.json({
+        message:
+          "there is some error from our side please try later",
+      });
     }
   } catch (err) {
-    return c.json({message: err})
+    return c.json({ message: err });
   }
 });

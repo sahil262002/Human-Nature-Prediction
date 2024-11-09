@@ -9,7 +9,8 @@ import {
   deleteCookie,
   getCookie,
 } from "hono/cookie";
-import bcrypt from "bcrypt";
+import { signPassword, verifyPassword } from "./encryption";
+
 
 export const user = new Hono<{
   Bindings: {
@@ -28,10 +29,13 @@ user.post("/signup", async (c) => {
 
   // let userCreation: User;
 
-  const hashedPassword = await bcrypt.hash(
+  const hashedPassword: any = await signPassword(
     body.password,
     10
   );
+  if(!hashedPassword){
+    return c.json({message: hashedPassword})
+  }
 
   try {
     const userCreation = await prisma.user.create({
@@ -42,7 +46,7 @@ user.post("/signup", async (c) => {
       },
     });
 
-    console.log(userCreation);
+    //console.log(userCreation);
     const jwt = await sign(
       { id: userCreation.id, name: userCreation.name },
       c.env.JWT_SECRET
@@ -84,11 +88,16 @@ user.post("/signin", async (c) => {
         message: "something is wrong check ur inputs",
       });
     }
-    const match = await bcrypt.compare(
+    const match = await verifyPassword(
       body.password,
-      matching.password
+      matching.password,
+      10
     );
     if (!match) {
+      console.log("matcht ",match)
+      // console.log("matching.passwrods",matching.password),
+      // console.log("body.passwrods",body.password)
+
       return c.json({ message: "password is wrong" });
     }
 
@@ -110,7 +119,7 @@ user.post("/signin", async (c) => {
         sameSite: "None",
         path: "/",
       });
-
+      console.log("match",match);
       return c.json({
         message: `${jwt} succefully logged in`,
       });
