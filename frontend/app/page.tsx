@@ -1,12 +1,12 @@
 import Image from "next/image";
-import { Button } from "@/components/Button";
+import { ButtonFront } from "@/components/ButtonFront";
 
 export default function Home() {
   return (
     <>
-    <Button link ={"http:localhost:3000/pages/api/auth/signup"} Name={"Signup"}/>
-    <Button link ={"http:localhost:3000/pages/api/auth/signin"} Name={"Signin"}/>
-    <Button link ={"http:localhost:3000/pages/api/QnA"} Name={"QnA"}/>
+    <ButtonFront link ={"http:localhost:3000/pages/api/auth/signup"} Name={"Signup"}/>
+    <ButtonFront link ={"http:localhost:3000/pages/api/auth/signin"} Name={"Signin"}/>
+    <ButtonFront link ={"http:localhost:3000/pages/api/QnA"} Name={"QnA"}/>
     </>
   );
 }

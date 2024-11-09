@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 
 
 
-export function Button({link, Name}:{link : String , Name : String }){
+export function ButtonFront({link, Name}:{link : String , Name : String }){
     const router = useRouter();
     return (
         <>
