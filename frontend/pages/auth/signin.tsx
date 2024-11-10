@@ -1,10 +1,18 @@
+
+
 import { links } from "@/backendRoute";
 import { ButtonBack } from "@/components/ButtonBack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export function Signup() {
+export default function Signin() {
   const [password, setPassword] = useState<string>();
   const [email, setEmail] = useState<string>();
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const originConsoleError = window.console.error;
+      // ... use originConsoleError here ...
+    }
+  }, []);
   const data = {
     email : email || "",
     password : password || "",

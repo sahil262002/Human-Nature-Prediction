@@ -1,3 +1,5 @@
+"use client"
+
 import axios from "axios";
 
 interface data {
@@ -5,7 +7,7 @@ interface data {
   email: string;
   password: string;
 }
-export async function ButtonBack({
+export function ButtonBack({
   userInputs,
   link,
   routeName,
@@ -14,12 +16,19 @@ export async function ButtonBack({
   link: string;
   routeName: string;
 }) {
-  async function sendDataToBackend() {
-    const sendData = await axios.post(`${link}`, {
-      name: userInputs.name,
-      email: userInputs.email,
-      password: userInputs.password,
-    });
+  function sendDataToBackend() {
+    axios
+      .post(link, {
+        name: userInputs.name,
+        email: userInputs.email,
+        password: userInputs.password,
+      })
+      .then((response) => {
+        console.log("Data sent successfully:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error sending data:", error);
+      });
   }
   return (
     <>

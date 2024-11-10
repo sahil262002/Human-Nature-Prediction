@@ -2,7 +2,7 @@ import { links } from "@/backendRoute";
 import { ButtonBack } from "@/components/ButtonBack";
 import { useState } from "react";
 
-export function Signup() {
+export default function Signup() {
   const [password, setPassword] = useState<string>();
   const [name, setName] = useState<string>();
   const [email, setEmail] = useState<string>();
