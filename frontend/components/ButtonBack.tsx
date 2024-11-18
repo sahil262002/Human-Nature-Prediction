@@ -1,11 +1,13 @@
-"use client"
+"use client";
 
 import axios from "axios";
+import { useState } from "react";
 
 interface data {
   name?: string;
   email: string;
   password: string;
+  prop?: any;
 }
 export function ButtonBack({
   userInputs,
@@ -17,6 +19,7 @@ export function ButtonBack({
   routeName: string;
 }) {
   function sendDataToBackend() {
+    userInputs.prop.setLoading(true);
     axios
       .post(link, {
         name: userInputs.name,
@@ -24,15 +27,21 @@ export function ButtonBack({
         password: userInputs.password,
       })
       .then((response) => {
-        console.log("Data sent successfully:", response.data);
+        console.log(
+          "Data sent successfully:",
+          response.data
+        );
       })
+      .then(() => userInputs.prop.setLoading(false))
       .catch((error) => {
         console.error("Error sending data:", error);
       });
   }
   return (
     <>
-      <button onClick={sendDataToBackend}>{routeName}</button>
+      <button onClick={sendDataToBackend}>
+        {routeName}
+      </button>
     </>
   );
 }

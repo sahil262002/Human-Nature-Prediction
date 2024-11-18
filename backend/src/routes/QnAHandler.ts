@@ -89,7 +89,8 @@ quest.post("/question", async (c) => {
 
     //console.log(inputs);
     console.log(Quest);
-    return c.json({message : "success"})
+    console.log(prediction);
+    return c.json({message : "success",prediction: prediction})
 
   } catch (err) {
     return c.json({ message: err });
