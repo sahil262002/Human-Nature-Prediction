@@ -53,45 +53,62 @@ quest.post("/question", async (c) => {
   const { payload } = await decode(cookies || "");
   const userid: string = payload.id as string;
   console.log(userid);
-  console.log(inputs.data[1].ans);
+  console.log(inputs);
 
   try {
-
-    let Quest: Records = await prisma.records.create(
-      {
-        data: {
-          userId: userid,
-        },
+    let Quest: Records = await prisma.records.create({
+      data: {
+        userId: userid,
+      },
+    });
+    let arr: number[] = [];
+    let invalidNumberIndex;
+    let donePredicitions=false;
+    for (let i = 0; i < inputs.data.length; i++) {
+      if (inputs.data[i].ans === null || inputs.data[i].ans>10) {
+        invalidNumberIndex = i;
+        await prisma.score.deleteMany({
+          where: { recordId: Quest.id },
+        });
+        await prisma.records.delete({
+          where: { id: Quest.id },
+        });
+        return c.json({
+          invalidInput:true,
+          invalidAtIndex:invalidNumberIndex
+        })
       }
-    );
-    let arr: number [] = [];
-    
-    for(let i = 0 ; i < inputs.data.length ; i++){
-      let creating = await prisma.score.create({
+      else{let creating = await prisma.score.create({
         data: {
           recordId: Quest.id,
-          inputByUser : inputs.data[i].ans
-
-        }
-      })
-      arr[i] = inputs.data[i].ans,
-      console.log(creating)
+          inputByUser: inputs.data[i].ans,
+        },
+      });
+      (arr[i] = inputs.data[i].ans), console.log(creating);}
     }
 
-    // const prediction = await axios.post("http:localhost:8000",{
-    //   data : arr,
-    // })
+    const prediction = await fetch(
+      "http://localhost:5314/predict",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ features: arr }),
+      }
+    );
+    const predictionBody: any = await prediction.json();
 
-    const prediction = await fetch("http://localhost:3000",{
-      method: "POST",
-      body : JSON.stringify({data : arr})
-    })
+    const predicts = predictionBody.predicted_labels;
 
+    console.log(predicts);
+    donePredicitions=true;
     //console.log(inputs);
-    console.log(Quest);
-    console.log(prediction);
-    return c.json({message : "success",prediction: prediction})
-
+    // console.log(Quest);
+    // console.log(prediction);
+    return c.json({
+      message: "success",
+      donePredicitions:donePredicitions,
+      prediction: predicts,
+    });
   } catch (err) {
     return c.json({ message: err });
   }

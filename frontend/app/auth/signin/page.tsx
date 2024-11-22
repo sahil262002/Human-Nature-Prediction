@@ -18,8 +18,10 @@ export default function Signin() {
   if (loading) {
     return (
       <>
-        <div className="text-2xl size-7 flex justify-evenly bg-slate-900">
-          <Loading />
+        <div className="text-center flex-col content-center w-screen h-screen">
+          <div className=" flex justify-center">
+            <Loading />
+          </div>
         </div>
       </>
     );

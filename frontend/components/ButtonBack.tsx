@@ -1,7 +1,8 @@
 "use client";
 
 import axios from "axios";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 interface data {
   name?: string;
@@ -9,6 +10,7 @@ interface data {
   password: string;
   prop?: any;
 }
+
 export function ButtonBack({
   userInputs,
   link,
@@ -18,30 +20,39 @@ export function ButtonBack({
   link: string;
   routeName: string;
 }) {
+  const router = useRouter();
+
   function sendDataToBackend() {
-    userInputs.prop.setLoading(true);
-    axios
-      .post(link, {
-        name: userInputs.name,
-        email: userInputs.email,
-        password: userInputs.password,
-      })
-      .then((response) => {
-        console.log(
-          "Data sent successfully:",
-          response.data
-        );
-      })
-      .then(() => userInputs.prop.setLoading(false))
-      .catch((error) => {
-        console.error("Error sending data:", error);
-      });
+    try {
+      userInputs.prop?.setLoading(true);
+      axios
+        .post(
+          link,
+          {
+            name: userInputs.name,
+            email: userInputs.email,
+            password: userInputs.password,
+          },
+          { withCredentials: true }
+        )
+        .then((response) => {
+          console.log(
+            "Data sent successfully:",
+            response.data
+          );
+
+          router.push("/");
+          userInputs.prop?.setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error sending data:", error);
+        });
+    } catch (err) {
+      console.log(err);
+    }
   }
+
   return (
-    <>
-      <button onClick={sendDataToBackend}>
-        {routeName}
-      </button>
-    </>
+    <button onClick={sendDataToBackend}>{routeName}</button>
   );
 }

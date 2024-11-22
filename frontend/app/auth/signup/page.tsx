@@ -19,7 +19,7 @@ export default function Signup() {
   if (loading) {
     return (
       <>
-        <div className="text-center flex-col content-center w-screen h-screen bg-slate-900">
+        <div className="text-center flex-col content-center w-screen h-screen">
           <div className=" flex justify-center">
             <Loading />
           </div>

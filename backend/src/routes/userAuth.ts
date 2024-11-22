@@ -112,10 +112,8 @@ user.post("/signin", async (c) => {
 
       setCookie(c, "token", jwt, {
         secure: true,
-        //domain: 'example.com',
         httpOnly: false,
         maxAge: 345600,
-        //expires: new Date(Date.UTC(2000, 11, 24, 10, 30, 59, 900)),
         sameSite: "None",
         path: "/",
       });

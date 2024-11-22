@@ -1,57 +1,49 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import joblib
 import numpy as np
+import pandas as pd
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message": "Hello World"}
-
-
-# Load your trained model and scaler
-rf_model = joblib.load("rf_model.pkl")
+# Load the trained logistic model and scaler
 logistic_model = joblib.load("logistic_model.pkl")
 scaler = joblib.load("scaler.pkl")
 
 # Define the input data structure
 class ModelInput(BaseModel):
-    features: list  # List of feature values for prediction
+    features: list  # List of 15 feature values for prediction
 
 # Function to handle predictions
+# Function to handle predictions
 def predict_labels(input_data):
-    # Convert input to the expected format, scale, and predict
-    input_data = np.array(input_data).reshape(1, -1)
-    input_data_scaled = scaler.transform(input_data)
+    # Validate the input data length
+    if len(input_data) != 15:
+        raise ValueError("Input data must contain exactly 15 features.")
     
-    # Make predictions with both models
-    rf_predicted_labels = rf_model.predict(input_data_scaled)
+    # Convert input to a DataFrame with the same column names as used during training
+    feature_columns = [
+        'Work-life Balance', 'Physical Activity', 'Stress Management', 'Lifestyle Satisfaction',
+        'Personal Goals', 'Social Life', 'Hobbies', 'Positivity', 'Time Management',
+        'Organization', 'Self-improvement', 'Diet', 'Helping Others', 'Confidence', 'Life Control'
+    ]
+    input_data_df = pd.DataFrame([input_data], columns=feature_columns)
+
+    # Scale the input data
+    input_data_scaled = scaler.transform(input_data_df)
+    
+    # Make predictions with the logistic model
     logistic_predicted_labels = logistic_model.predict(input_data_scaled)
 
-    # Helper function to remove duplicates and preserve order
-    def get_unique_labels(labels):
-        seen = set()
-        unique_labels = [int(label) for label in labels if not (label in seen or seen.add(label))]
-        return unique_labels
-
-    # Convert predictions to unique labels for both models
-    rf_unique_labels = get_unique_labels(rf_predicted_labels[0])
-    logistic_unique_labels = get_unique_labels(logistic_predicted_labels[0])
-
-    # Combine unique predictions from both models
-    combined_labels = rf_unique_labels + logistic_unique_labels
-    final_unique_labels = get_unique_labels(combined_labels)
-
-    # Return the final result
-    return final_unique_labels
-
+    # Return the final result as a list of unique predicted labels
+    return logistic_predicted_labels[0].tolist()
 # API endpoint to receive data and respond with predictions
 @app.post("/predict")
 async def predict(input_data: ModelInput):
-    labels = predict_labels(input_data.features)
-    print("labels" , labels)
-    print("input_data", input_data)
-    print("modelInput" , ModelInput) 
-    return {"predicted_labels": labels}
-    
+    try:
+        labels = predict_labels(input_data.features)
+        print("received data",input_data)
+        print(labels)
+        return {"predicted_labels": labels}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
