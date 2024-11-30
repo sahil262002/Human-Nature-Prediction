@@ -3,6 +3,8 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface data {
   name?: string;
@@ -40,19 +42,35 @@ export function ButtonBack({
             "Data sent successfully:",
             response.data
           );
+          const fetched = response.data;
 
-          router.push("/");
+          if (fetched.error) {
+            toast.error(`${fetched.message}`);
+          } else {
+            toast.success("Verified successfully");
+            router.push("/");
+          }
           userInputs.prop?.setLoading(false);
         })
         .catch((error) => {
-          console.error("Error sending data:", error);
+          userInputs.prop?.setLoading(false);
+          //toast.error("Something went wrong ");
         });
     } catch (err) {
+      toast.error("Something went wrong ");
       console.log(err);
     }
   }
 
   return (
-    <button onClick={sendDataToBackend}>{routeName}</button>
+    <>
+      <Toaster />
+      <button
+        onClick={sendDataToBackend}
+        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+      >
+        {routeName}
+      </button>
+    </>
   );
 }

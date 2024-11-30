@@ -19,28 +19,40 @@ quest.use("/*", async (c, next) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env?.DATABASE_URL,
   }).$extends(withAccelerate());
-
-  const cookies = await getCookie(c, "token");
-  console.log(cookies);
+  console.log("Cookie checking...");
+  const cook = await getCookie(c);
+  console.log(cook);
 
   try {
-    if (!cookies) {
+    if (!cook) {
       return c.json({
-        message: "you are not logged in",
+        message: "you are not logged in bro",
+        loggedIn: false,
       });
-    } else if (cookies) {
-      const verif = await verify(cookies, c.env.JWT_SECRET);
+    } else if (cook) {
+      const verif = await verify(cook.token, c.env.JWT_SECRET);
       if (!verif) {
         return c.json({
           message: "you are not logged in",
+          loggedIn: false,
         });
       } else {
+        // return c.json({
+        //   loggedIn: true,
+        // });
         await next();
       }
     }
   } catch (err) {
     return c.json({ message: err });
   }
+});
+
+quest.post("/check", async (c) => {
+  return c.json({
+    message: "checking",
+    loggedIn:true,
+  });
 });
 
 quest.post("/question", async (c) => {
@@ -63,9 +75,12 @@ quest.post("/question", async (c) => {
     });
     let arr: number[] = [];
     let invalidNumberIndex;
-    let donePredicitions=false;
+    let donePredicitions = false;
     for (let i = 0; i < inputs.data.length; i++) {
-      if (inputs.data[i].ans === null || inputs.data[i].ans>10) {
+      if (
+        inputs.data[i].ans === null ||
+        inputs.data[i].ans > 10
+      ) {
         invalidNumberIndex = i;
         await prisma.score.deleteMany({
           where: { recordId: Quest.id },
@@ -74,21 +89,23 @@ quest.post("/question", async (c) => {
           where: { id: Quest.id },
         });
         return c.json({
-          invalidInput:true,
-          invalidAtIndex:invalidNumberIndex
-        })
+          invalidInput: true,
+          invalidAtIndex: invalidNumberIndex,
+        });
+      } else {
+        let creating = await prisma.score.create({
+          data: {
+            recordId: Quest.id,
+            inputByUser: inputs.data[i].ans,
+          },
+        });
+        (arr[i] = inputs.data[i].ans),
+          console.log(creating);
       }
-      else{let creating = await prisma.score.create({
-        data: {
-          recordId: Quest.id,
-          inputByUser: inputs.data[i].ans,
-        },
-      });
-      (arr[i] = inputs.data[i].ans), console.log(creating);}
     }
 
     const prediction = await fetch(
-      "http://localhost:5314/predict",
+      "http://localhost:8000/predict",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -98,16 +115,27 @@ quest.post("/question", async (c) => {
     const predictionBody: any = await prediction.json();
 
     const predicts = predictionBody.predicted_labels;
+    const set = new Set<number>();
+    const array:number[]=[];
+    for(let i = 0;i<predicts.length;i++){
+      if(!set.has(predicts[i])){
+        array.push(predicts[i]);
+        await prisma.result.create({data:{
+          recordId:Quest.id,
+          outputByModel:predicts[i]
+        }})
+      }
+    }
 
     console.log(predicts);
-    donePredicitions=true;
+    donePredicitions = true;
     //console.log(inputs);
     // console.log(Quest);
     // console.log(prediction);
     return c.json({
       message: "success",
-      donePredicitions:donePredicitions,
-      prediction: predicts,
+      donePredicitions: donePredicitions,
+      prediction: array,
     });
   } catch (err) {
     return c.json({ message: err });

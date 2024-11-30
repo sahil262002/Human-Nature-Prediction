@@ -48,14 +48,16 @@ profile.use("/*", async (c, next) => {
   }
 });
 
-profile.get("/:id", async (c) => {
+profile.get("/id", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env?.DATABASE_URL,
   }).$extends(withAccelerate());
 
-  const userid = await c.req.param("id");
-
   try {
+    const cookies = await getCookie(c, "token");
+    const { payload } = await decode(cookies || "");
+    const userid: string = payload.id as string;
+    console.log(userid,"sahil ");
     if (!userid) {
       return c.json({ message: "invalid id" });
     } else {
@@ -87,16 +89,18 @@ profile.get("/:id", async (c) => {
   }
 });
 
-profile.post("/:id/change", async (c) => {
+profile.post("/change", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env?.DATABASE_URL,
   }).$extends(withAccelerate());
 
-  const userid = await c.req.param("id");
-
   const inputs = await c.req.json();
 
   try {
+    const cookies = await getCookie(c, "token");
+    const { payload } = await decode(cookies || "");
+    const userid: string = payload.id as string;
+    console.log(userid);
     if (!userid) {
       return c.json({ message: "invalid userid" });
     } else {
@@ -126,16 +130,20 @@ profile.post("/:id/change", async (c) => {
     }
   } catch (err) {}
 });
-profile.put("/:id/changepassword", async (c) => {
+profile.put("/changepassword", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env?.DATABASE_URL,
   }).$extends(withAccelerate());
 
-  const userid = await c.req.param("id");
+  //const userid = await c.req.param("id");
   const { newPassword, oldPassword } = await c.req.json();
   const check = await c.get("accessFlags");
 
   try {
+    const cookies = await getCookie(c, "token");
+    const { payload } = await decode(cookies || "");
+    const userid: string = payload.id as string;
+    console.log(userid);
     if (!check) {
       return c.json({
         message: "you don't have permission to access this",

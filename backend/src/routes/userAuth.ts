@@ -11,13 +11,13 @@ import {
 } from "hono/cookie";
 import { signPassword, verifyPassword } from "./encryption";
 
-
 export const user = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
   };
 }>();
+
 
 user.post("/signup", async (c) => {
   const prisma = new PrismaClient({
@@ -29,15 +29,27 @@ user.post("/signup", async (c) => {
 
   // let userCreation: User;
 
-  const hashedPassword: any = await signPassword(
-    body.password,
-    10
-  );
-  if(!hashedPassword){
-    return c.json({message: hashedPassword})
-  }
-
   try {
+    const emailverification = await prisma.user.findFirst({
+      where: {
+        email: body.email,
+      },
+    });
+    if (emailverification) {
+      return c.json({
+        message: "Email already is use",
+        error: true,
+      });
+    }
+    const hashedPassword: any = await signPassword(
+      body.password,
+      10
+    );
+    if (!hashedPassword) {
+      return c.json({ message: "Something went wrong. Please try later" ,
+        error : true
+      });
+    }
     const userCreation = await prisma.user.create({
       data: {
         email: body.email,
@@ -55,8 +67,8 @@ user.post("/signup", async (c) => {
     console.log(jwt);
 
     setCookie(c, "token", jwt, {
-      secure: true,
-      httpOnly: false,
+      secure:true,
+      httpOnly: true,
       maxAge: 345600,
       sameSite: "None",
       path: "/",
@@ -65,7 +77,9 @@ user.post("/signup", async (c) => {
     return c.json({ message: jwt });
   } catch (error: any) {
     //c.status(403);
-    return c.json({ message: error });
+    return c.json({ message: "Something went wrong. Please try later",
+      error : true
+     });
   }
 });
 
@@ -85,8 +99,10 @@ user.post("/signin", async (c) => {
 
     if (!matching) {
       return c.json({
-        message: "something is wrong check ur inputs",
+        message: "User not Found. Check your inputs",
+        error: true
       });
+
     }
     const match = await verifyPassword(
       body.password,
@@ -94,11 +110,13 @@ user.post("/signin", async (c) => {
       10
     );
     if (!match) {
-      console.log("matcht ",match)
+      console.log("matcht ", match);
       // console.log("matching.passwrods",matching.password),
       // console.log("body.passwrods",body.password)
 
-      return c.json({ message: "password is wrong" });
+      return c.json({ message: "User not Found. Check your inputs" ,
+        error: true
+      });
     }
 
     if (match) {
@@ -111,15 +129,16 @@ user.post("/signin", async (c) => {
       );
 
       setCookie(c, "token", jwt, {
-        secure: true,
-        httpOnly: false,
+        secure:true,
+        httpOnly: true,
         maxAge: 345600,
         sameSite: "None",
         path: "/",
       });
-      console.log("match",match);
+      console.log("match", match);
       return c.json({
         message: `${jwt} succefully logged in`,
+        error: false
       });
     }
   } catch (error) {
@@ -127,13 +146,26 @@ user.post("/signin", async (c) => {
   }
 });
 
-user.post("/logout", async (c) => {
-  deleteCookie(c, "token");
+user.get("/logout", async (c) => {
+  
+  const deletedCookie = await deleteCookie(c, "token", {
+    path: "/",
+    sameSite: "None",
+    secure: true, 
+    httpOnly: true, 
+  });
+
+  
+  console.log("Deleted cookie:", deletedCookie);
+
+  
   const body = getCookie(c, "token");
-  console.log(body);
+  console.log("Cookie after deletion:", body); 
+
   return c.json({
-    message: "you are successfully logged out",
+    message: "You are successfully logged out",
   });
 });
+
 
 user.post("/:id", async (c) => {});
