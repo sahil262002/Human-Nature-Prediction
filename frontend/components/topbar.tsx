@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { links } from "@/backendRoute";
+import {links} from '../backendRoute'
 import { Loading } from "./Loading";
 
 export default function Topbar() {

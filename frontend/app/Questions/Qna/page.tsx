@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { QuestFormat, data } from "./data";
 import axios from "axios";
-import { links } from "@/backendRoute";
+import { links } from '../../../backendRoute';
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import Stepper from "@/components/Stepper";

@@ -1,6 +1,6 @@
 "use client";
 
-import { links } from "@/backendRoute";
+import { links } from '../../../backendRoute';
 import { ButtonBack } from "@/components/ButtonBack";
 import { Loading } from "@/components/Loading";
 import { useState } from "react";

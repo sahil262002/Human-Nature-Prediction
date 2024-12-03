@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import axios from "axios";
-import { links } from "@/backendRoute";
+import {links} from '../backendRoute'
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import Stepper from "@/components/Stepper";
@@ -155,7 +155,7 @@ export default function Pages({
 
                     setError((prevErrors) => ({
                       ...prevErrors,
-                      [q.id]: value > 10,
+                      [q.id]: value > 10 ,
                     }));
 
                     setQna((quet) =>
