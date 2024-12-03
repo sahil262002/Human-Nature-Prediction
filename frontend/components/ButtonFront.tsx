@@ -5,7 +5,7 @@ import { Loading } from "./Loading";
 
 
 
-export function ButtonFront({link, Name, loading}:{link : String , Name : String, loading: any }){
+export function ButtonFront({link, Name, loading}:{link : string , Name : string, loading: any }){
     const router = useRouter();
     function handler(){
         loading.setLoading(true);
