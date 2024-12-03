@@ -15,6 +15,29 @@ export const quest = new Hono<{
   };
 }>();
 
+const fetchWithTimeout = (
+  url: string,
+  options: RequestInit,
+  timeout: number
+) => {
+  return new Promise<Response>((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error("Request timed out")),
+      timeout
+    );
+
+    fetch(url, options)
+      .then((response) => {
+        clearTimeout(timer);
+        resolve(response);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+  });
+};
+
 quest.use("/*", async (c, next) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env?.DATABASE_URL,
@@ -78,7 +101,7 @@ quest.post("/question", async (c) => {
     });
     let arr: number[] = [];
     let invalidNumberIndex;
-    let newarr= []
+    let newarr = [];
     let donePredicitions = false;
     for (let i = 0; i < inputs.data.length; i++) {
       if (
@@ -97,60 +120,78 @@ quest.post("/question", async (c) => {
           invalidAtIndex: invalidNumberIndex,
         });
       } else {
-        let creating = newarr.push( prisma.score.create({
-          data: {
-            recordId: Quest.id,
-            inputByUser: inputs.data[i].ans,
-          },
-        }));
+        let creating = newarr.push(
+          prisma.score.create({
+            data: {
+              recordId: Quest.id,
+              inputByUser: inputs.data[i].ans,
+            },
+          })
+        );
         (arr[i] = inputs.data[i].ans),
-          console.log(creating ,"creating");
+          console.log(creating, "creating");
       }
     }
     await Promise.all(newarr);
 
-    const prediction = await fetch(
-      "http://ec2-3-111-51-145.ap-south-1.compute.amazonaws.com/predict",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ features: arr }),
-      }
-    );
-    const predictionBody: any = await prediction.json();
+    try {
+      const prediction = await fetchWithTimeout(
+        "http://ec2-3-111-51-145.ap-south-1.compute.amazonaws.com/predict",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ features: arr }),
+        },
+        5000
+      );
 
-    const predicts = predictionBody.predicted_labels;
-    const set = new Set<number>();
-    const array: number[] = [];
-    const promises = [];
-    for (let i = 0; i < predicts.length; i++) {
-      if (!set.has(predicts[i])) {
-        set.add(predicts[i]);
-        array.push(predicts[i]);
-        promises.push(
-          prisma.result.create({
-            data: {
-              recordId: Quest.id,
-              outputByModel: predicts[i],
-            },
-          })
+      if (!prediction.ok) {
+        throw new Error(
+          "Prediction service responded with an error"
         );
-      }
-    }
-    await Promise.all(promises);
-    console.log("set", set);
-    console.log("array", array);
+      } else {
+        const predictionBody: any = await prediction.json();
+        const predicts = predictionBody.predicted_labels;
+        const set = new Set<number>();
+        const array: number[] = [];
+        const promises = [];
 
-    console.log(predicts);
-    donePredicitions = true;
-    //console.log(inputs);
-    // console.log(Quest);
-    // console.log(prediction);
-    return c.json({
-      message: "success",
-      donePredicitions: donePredicitions,
-      prediction: array,
-    });
+        for (let i = 0; i < predicts.length; i++) {
+          if (!set.has(predicts[i])) {
+            set.add(predicts[i]);
+            array.push(predicts[i]);
+            promises.push(
+              prisma.result.create({
+                data: {
+                  recordId: Quest.id,
+                  outputByModel: predicts[i],
+                },
+              })
+            );
+          }
+        }
+        await Promise.all(promises);
+        donePredicitions = true;
+
+        return c.json({
+          message: "success",
+          donePredicitions: donePredicitions,
+          prediction: array,
+        });
+      }
+    } catch (err) {
+      console.error("Prediction service failed:", err);
+      await prisma.score.deleteMany({
+        where: { recordId: Quest.id },
+      });
+      await prisma.records.delete({
+        where: { id: Quest.id },
+      });
+      return c.json({
+        message: "Prediction service unavailable",
+        invalidInput: true,
+      });
+    }
   } catch (err) {
     return c.json({ message: err });
   }

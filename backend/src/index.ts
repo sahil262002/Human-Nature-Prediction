@@ -16,21 +16,21 @@ const app = new Hono<{
 const prisma = new PrismaClient();
 
 
-
 app.use(
-  "/api/*",
+  "/api/v1/*",
   cors({
     credentials: true,
-    origin: ["http://localhost:3000"],
+    origin: ["https://human-nature-prediction.vercel.app"],
   })
 );
 
+app.options("*", (c) => {
+  return c.text("OK", 204);
+});
 
-app.route("api/v1/user" , user)
-
-app.route("api/v1/quest", quest)
-
-app.route("api/v1/user-profile" , profile)
+app.route("api/v1/user", user);
+app.route("api/v1/quest", quest);
+app.route("api/v1/user-profile", profile);
 
 app.get("/api/get", (c) => {
   return c.text("Hello Hono! sahil");
