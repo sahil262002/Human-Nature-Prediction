@@ -30,7 +30,10 @@ quest.use("/*", async (c, next) => {
         loggedIn: false,
       });
     } else if (cook) {
-      const verif = await verify(cook.token, c.env.JWT_SECRET);
+      const verif = await verify(
+        cook.token,
+        c.env.JWT_SECRET
+      );
       if (!verif) {
         return c.json({
           message: "you are not logged in",
@@ -51,7 +54,7 @@ quest.use("/*", async (c, next) => {
 quest.post("/check", async (c) => {
   return c.json({
     message: "checking",
-    loggedIn:true,
+    loggedIn: true,
   });
 });
 
@@ -75,6 +78,7 @@ quest.post("/question", async (c) => {
     });
     let arr: number[] = [];
     let invalidNumberIndex;
+    let newarr= []
     let donePredicitions = false;
     for (let i = 0; i < inputs.data.length; i++) {
       if (
@@ -93,16 +97,17 @@ quest.post("/question", async (c) => {
           invalidAtIndex: invalidNumberIndex,
         });
       } else {
-        let creating = await prisma.score.create({
+        let creating = newarr.push( prisma.score.create({
           data: {
             recordId: Quest.id,
             inputByUser: inputs.data[i].ans,
           },
-        });
+        }));
         (arr[i] = inputs.data[i].ans),
-          console.log(creating);
+          console.log(creating ,"creating");
       }
     }
+    await Promise.all(newarr);
 
     const prediction = await fetch(
       "http://localhost:8000/predict",
@@ -116,16 +121,25 @@ quest.post("/question", async (c) => {
 
     const predicts = predictionBody.predicted_labels;
     const set = new Set<number>();
-    const array:number[]=[];
-    for(let i = 0;i<predicts.length;i++){
-      if(!set.has(predicts[i])){
+    const array: number[] = [];
+    const promises = [];
+    for (let i = 0; i < predicts.length; i++) {
+      if (!set.has(predicts[i])) {
+        set.add(predicts[i]);
         array.push(predicts[i]);
-        await prisma.result.create({data:{
-          recordId:Quest.id,
-          outputByModel:predicts[i]
-        }})
+        promises.push(
+          prisma.result.create({
+            data: {
+              recordId: Quest.id,
+              outputByModel: predicts[i],
+            },
+          })
+        );
       }
     }
+    await Promise.all(promises);
+    console.log("set", set);
+    console.log("array", array);
 
     console.log(predicts);
     donePredicitions = true;

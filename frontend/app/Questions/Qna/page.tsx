@@ -37,7 +37,7 @@ export default function QnA() {
         .catch((e) => {
           console.error(e);
         });
-    }, 10000);
+    }, 5000);
     return () => clearTimeout(interval);
   }, []);
 

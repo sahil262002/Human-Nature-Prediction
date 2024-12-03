@@ -44,13 +44,14 @@ export default function Result({
       </div>
       {score.reverse().map((get) => (
         <div key={get.id} className="p-4 border m-2">
-          <p>ID: {get.id}</p>
-          <div className="flex flex-col items-center">
+          <p>ID : {get.id}</p>
+          {/* <div className="flex flex-col items-center">
             <div className="text-center">Nature:</div>
             <div className="text-center">
               {handle(get.outputs)}
             </div>
-          </div>
+          </div> */}
+          <span>Nature : {handle(get.outputs)}</span>
         </div>
       ))}
     </>
