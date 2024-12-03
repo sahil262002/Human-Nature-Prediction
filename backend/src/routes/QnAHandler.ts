@@ -110,7 +110,7 @@ quest.post("/question", async (c) => {
     await Promise.all(newarr);
 
     const prediction = await fetch(
-      "http://localhost:8000/predict",
+      "http://ec2-3-111-51-145.ap-south-1.compute.amazonaws.com/predict",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
