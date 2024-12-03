@@ -1,6 +1,6 @@
 "use client";
 
-import { links } from "@/backendRoute";
+import { links } from "./../../backendRoute";
 import { Loading } from "@/components/Loading";
 import Result from "@/components/uesrResults";
 import Details from "@/components/userDetail";
