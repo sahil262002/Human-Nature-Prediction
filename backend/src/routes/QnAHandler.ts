@@ -99,6 +99,7 @@ quest.post("/question", async (c) => {
         userId: userid,
       },
     });
+    
     let arr: number[] = [];
     let invalidNumberIndex;
     let newarr = [];
@@ -128,8 +129,8 @@ quest.post("/question", async (c) => {
             },
           })
         );
-        (arr[i] = inputs.data[i].ans),
-          console.log(creating, "creating");
+        (arr[i] = inputs.data[i].ans)
+          //console.log(creating, "creating");
       }
     }
     await Promise.all(newarr);

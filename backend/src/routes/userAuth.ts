@@ -25,7 +25,7 @@ user.post("/signup", async (c) => {
   }).$extends(withAccelerate());
 
   const body = await c.req.json();
-  console.log(body);
+ // console.log(body);
 
   // let userCreation: User;
 
@@ -64,7 +64,7 @@ user.post("/signup", async (c) => {
       c.env.JWT_SECRET
     );
 
-    console.log(jwt);
+    //console.log(jwt);
 
     setCookie(c, "token", jwt, {
       secure:true,
