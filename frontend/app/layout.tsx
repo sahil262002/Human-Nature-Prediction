@@ -29,10 +29,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="">
-          <Topbar/>
+        <div className="flex flex-col min-h-screen">
+          {/* Topbar component */}
+          <Topbar />
+
+          {/* Center the children content */}
+          <div className="flex-grow flex justify-center items-center p-4">
+            {children}
+          </div>
+
+          {/* Footer fixed at the bottom */}
+          <footer className="bg-gray-800 text-white py-4 mt-6 text-center">
+            <p>© 2024 Your Company. All rights reserved.</p>
+          </footer>
         </div>
-        {children}
       </body>
     </html>
   );

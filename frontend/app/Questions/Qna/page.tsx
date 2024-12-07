@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { QuestFormat, data } from "./data";
 import axios from "axios";
-import { links } from '../../../backendRoute';
+import { links } from "@/backendRoute";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import Stepper from "@/components/Stepper";
@@ -37,7 +37,7 @@ export default function QnA() {
         .catch((e) => {
           console.error(e);
         });
-    }, 5000);
+    }, 10000);
     return () => clearTimeout(interval);
   }, []);
 
@@ -51,13 +51,19 @@ export default function QnA() {
       </div>
     );
   }
+
   return (
     <>
       <Toaster />
-      <div className="h-full w-screen flex-col content-center">
+      <div
+        className="h-full w-screen flex-col content-center bg-cover bg-center"
+        style={{
+          backgroundImage: "url('/bg.jpg')", // Path to your background image
+        }}
+      >
         <div className="flex justify-center mt-6">
           <div className="">
-            <div className="mb-10 ">
+            <div className="mb-10">
               {!pred ? (
                 <Stepper next={next} />
               ) : (
@@ -77,6 +83,8 @@ export default function QnA() {
               />
             </div>
           </div>
+
+          {/* Modal overlay for when the user is not signed in */}
           {!check && (
             <div className="absolute top-0 left-0 w-full h-[calc(100vh-4rem)] bg-black bg-opacity-60 flex items-center justify-center z-50">
               <div className="bg-slate-400 opacity-90 p-8 rounded shadow-lg text-center">
