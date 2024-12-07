@@ -4,18 +4,25 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: url('/bg.jpg'); /* Path to your image in the public folder */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: url('/bg.jpg'); /* Use the same or a different image for dark mode */
   }
 }
 
 body {
-  color: var(--foreground);
+  color: #ededed; /* Fallback text color */
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.foreground-image {
+  background-image: var(--foreground);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }

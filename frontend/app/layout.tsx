@@ -27,12 +27,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        <div className="">
-          <Topbar/>
+        <div>
+          <Topbar />
         </div>
         {children}
+        
+        {/* Footer fixed at the bottom */}
+        <footer className="bg-gray-800 text-white py-4 mt-auto text-center">
+          <p>© 2024 Your Company. All rights reserved.</p>
+        </footer>
       </body>
     </html>
   );
