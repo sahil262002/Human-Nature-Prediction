@@ -32,7 +32,7 @@ export default function Signin() {
       <div className="text-center flex-col content-center w-screen h-[calc(100vh-4rem)]">
         <div className=" flex justify-center">
           <div className="border-solid border-2 border-slate-600 rounded-lg border-t-4  shadow-indigo-500/50  shadow-2xl">
-            <div className="m-3">
+            <div className="m-3 text-center">
               <div>
                 <input
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
