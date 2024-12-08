@@ -63,8 +63,8 @@ export default function Topbar() {
   return (
     <div className="w-full h-16 border-b border-gray-400 shadow-md bg-neutral-800 grid grid-cols-12">
       
-      <div
-        className="col-span-3 flex items-center justify-center text-xl text-amber-500 font-mono font-semibold hover:text-amber-600 transition"
+      <div onClick={() => handler("/")}
+        className="cursor-pointer col-span-3 flex items-center justify-center text-xl text-amber-500 font-mono font-semibold hover:text-amber-600 transition"
       >
         Human Nature Prediction
       </div>
