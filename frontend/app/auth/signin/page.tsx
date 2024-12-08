@@ -29,10 +29,10 @@ export default function Signin() {
 
   return (
     <>
-      <div className="foreground-image w-full h-[83vh] flex items-center justify-center">
+      <div className="foreground-image w-full h-[83vh] flex-col content-center justify-center">
         <div className="flex justify-center w-full">
           <div className="border-solid border-2 border-slate-600 rounded-lg border-t-4 shadow-indigo-700 shadow-2xl max-w-xs w-full p-8">
-            <div className="m-3">
+            <div className="m-3 text-center">
               <div>
                 <input
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
