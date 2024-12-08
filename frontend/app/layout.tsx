@@ -36,7 +36,7 @@ export default function RootLayout({
         
         {/* Footer fixed at the bottom */}
         <footer className="bg-gray-800 text-white py-4 mt-auto text-center">
-          <p>© 2024 Your Company. All rights reserved.</p>
+          <p>© 2024 THEBuilders Company. All rights reserved.</p>
         </footer>
       </body>
     </html>
