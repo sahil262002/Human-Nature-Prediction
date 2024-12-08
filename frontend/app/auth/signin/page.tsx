@@ -31,7 +31,7 @@ export default function Signin() {
     <>
       <div className="foreground-image w-full h-[83vh] flex items-center justify-center">
         <div className="flex justify-center w-full">
-          <div className="border-solid border-2 border-slate-600 rounded-lg border-t-4 shadow-indigo-500/50 shadow-2xl max-w-xs w-full p-8">
+          <div className="border-solid border-2 border-slate-600 rounded-lg border-t-4 shadow-indigo-700 shadow-2xl max-w-xs w-full p-8">
             <div className="m-3">
               <div>
                 <input
