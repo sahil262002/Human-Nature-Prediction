@@ -12,6 +12,7 @@ export const quest = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
+    M_URL: string;
   };
 }>();
 
@@ -137,7 +138,7 @@ quest.post("/question", async (c) => {
 
     try {
       const prediction = await fetchWithTimeout(
-        "http://ec2-3-111-51-145.ap-south-1.compute.amazonaws.com/predict",
+        c.env.M_URL,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
