@@ -6,7 +6,7 @@ import { links } from "../backendRoute";
 import { Loading } from "./Loading";
 
 export default function Topbar() {
-  const [loading, setLoading] = useState(true); // Loading starts true until data is fetched
+  const [loading, setLoading] = useState(true); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
@@ -62,23 +62,23 @@ export default function Topbar() {
 
   return (
     <div className="w-full h-16 border-b border-gray-400 shadow-md bg-neutral-800 grid grid-cols-12">
-      {/* Left Section: App Name */}
+      
       <div
         className="col-span-3 flex items-center justify-center text-xl text-amber-500 font-mono font-semibold hover:text-amber-600 transition"
       >
         Human Nature Prediction
       </div>
 
-      {/* Middle Section: Navigation Links */}
+      
       <div className="col-start-9 col-end-12 grid grid-cols-8 gap-4 items-center">
-        {/* Home Button */}
+       
         <div className="col-span-2 flex justify-center">
-          <button
+{/*           <button
             onClick={() => handler("/")}
             className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition"
           >
             Home
-          </button>
+          </button> */}
         </div>
 
         {isLoggedIn ? (
@@ -120,7 +120,7 @@ export default function Topbar() {
         </div>
       </div>
 
-      {/* Right Section: Profile Icon */}
+      
       <div className="col-start-12 flex items-center justify-center">
         <div
           onClick={() => handler("/user")}
