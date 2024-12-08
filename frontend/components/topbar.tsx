@@ -2,11 +2,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import {links} from '../backendRoute'
+import { links } from "../backendRoute";
 import { Loading } from "./Loading";
 
 export default function Topbar() {
-  const [loading, setLoading] = useState(true); // Loading starts true until data is fetched
+  const [loading, setLoading] = useState(true); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
@@ -33,9 +33,8 @@ export default function Topbar() {
   }, [loading]);
 
   const handler = (path: string) => {
-    setLoading(true)
+    setLoading(true);
     router.push(path);
-    
   };
 
   const logouthandler = async () => {
@@ -53,7 +52,7 @@ export default function Topbar() {
 
   if (loading) {
     return (
-      <div className="text-center flex-col content-center w-screen h-dvh">
+      <div className="text-center flex flex-col content-center w-screen h-screen">
         <div className="flex justify-center">
           <Loading />
         </div>
@@ -62,56 +61,71 @@ export default function Topbar() {
   }
 
   return (
-    <div className="w-full h-16 border-b border-opacity-50 shadow-slate-500 bg-neutral-800 opacity-85 grid grid-cols-12">
-      <div
-        onClick={() => handler("/")}
-        className="cursor-pointer col-span-3 text-center flex flex-col justify-center text-xl text-amber-600 text-pretty font-mono font-semibold"
+    <div className="w-full h-16 border-b border-gray-400 shadow-md bg-neutral-800 grid grid-cols-12">
+      
+      <div onClick={() => handler("/")}
+        className="cursor-pointer col-span-3 flex items-center justify-center text-xl text-amber-500 font-mono font-semibold hover:text-amber-600 transition"
       >
         Human Nature Prediction
       </div>
-      <div className="col-start-10 col-end-12 grid grid-cols-8">
+
+      
+      <div className="col-start-9 col-end-12 grid grid-cols-8 gap-4 items-center">
+       
+        <div className="col-span-2 flex justify-center">
+{/*           <button
+            onClick={() => handler("/")}
+            className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition"
+          >
+            Home
+          </button> */}
+        </div>
+
         {isLoggedIn ? (
-          <div className="col-span-2 flex flex-col justify-center">
-            <p
+          <div className="col-span-2 flex justify-center">
+            <button
               onClick={logouthandler}
-              className="cursor-pointer"
+              className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition"
             >
               SignOut
-            </p>
+            </button>
           </div>
         ) : (
-          <div className="col-span-4 grid grid-cols-4">
-            <div className="col-start-1 col-end-3 flex flex-col justify-center">
-              <p
+          <div className="col-span-4 grid grid-cols-4 gap-2">
+            <div className="col-span-2 flex justify-center">
+              <button
                 onClick={() => handler("/auth/signup")}
-                className="cursor-pointer"
+                className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition"
               >
                 SignUp
-              </p>
+              </button>
             </div>
-            <div className="col-start-3 col-end-5 flex flex-col justify-center">
-              <p
+            <div className="col-span-2 flex justify-center">
+              <button
                 onClick={() => handler("/auth/signin")}
-                className="cursor-pointer"
+                className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
               >
                 SignIn
-              </p>
+              </button>
             </div>
           </div>
         )}
-        <div className="col-span-2 flex flex-col justify-center">
-          <p
+        <div className="col-span-2 flex justify-center">
+          <button
             onClick={() => handler("/Questions/Qna")}
-            className="cursor-pointer"
+            className="px-4 py-2 rounded-md bg-yellow-500 text-white hover:bg-yellow-600 transition"
           >
             QNA
-          </p>
+          </button>
         </div>
       </div>
-      <div className="col-start-12 flex flex-col justify-center">
+
+      
+      <div className="col-start-12 flex items-center justify-center">
         <div
           onClick={() => handler("/user")}
-          className="cursor-pointer w-10 h-10 rounded-full bg-red-50"
+          className="cursor-pointer w-10 h-10 rounded-full bg-gray-300 hover:bg-gray-400 transition"
+          aria-label="User Profile"
         ></div>
       </div>
     </div>
