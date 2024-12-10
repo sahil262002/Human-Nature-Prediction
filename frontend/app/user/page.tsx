@@ -1,6 +1,6 @@
 "use client";
 
-import { links } from "./../../backendRoute";
+
 import { Loading } from "@/components/Loading";
 import Result from "@/components/uesrResults";
 import Details from "@/components/userDetail";
@@ -28,7 +28,7 @@ export default function User() {
     console.log(loading);
     try {
       axios
-        .get(`${links.userProfile}`, {
+        .get(`${process.env.userProfile || ""}`, {
           withCredentials: true,
         })
         .then((response) => {

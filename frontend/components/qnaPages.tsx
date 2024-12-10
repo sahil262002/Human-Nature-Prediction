@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import axios from "axios";
-import {links} from '../backendRoute'
+
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import Stepper from "@/components/Stepper";
@@ -58,7 +58,7 @@ export default function Pages({
     try {
       axios
         .post(
-          `${links.quest}`,
+          `${process.env.quest || ""}`,
           {
             data: ans,
           },

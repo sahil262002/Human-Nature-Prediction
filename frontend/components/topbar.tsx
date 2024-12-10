@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { links } from "../backendRoute";
+
 import { Loading } from "./Loading";
 
 export default function Topbar() {
@@ -16,7 +16,7 @@ export default function Topbar() {
       setLoading(true);
       try {
         const response = await axios.post(
-          links.check,
+          process.env.check || "",
           {},
           {
             withCredentials: true,
@@ -40,7 +40,7 @@ export default function Topbar() {
   const logouthandler = async () => {
     setLoading(true);
     try {
-      await axios.get(links.logout, { withCredentials: true });
+      await axios.get(process.env.logout || "", { withCredentials: true });
       setIsLoggedIn(false);
       router.push("/");
     } catch (error) {

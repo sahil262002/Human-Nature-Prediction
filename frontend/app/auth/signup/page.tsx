@@ -1,6 +1,6 @@
 "use client";
 
-import { links } from "../../../backendRoute";
+
 import { ButtonBack } from "@/components/ButtonBack";
 import { Loading } from "@/components/Loading";
 import { useState } from "react";
@@ -65,7 +65,7 @@ export default function Signup() {
               <div className="mt-2">
                 <ButtonBack
                   userInputs={data}
-                  link={links.signup}
+                  link={process.env.signup || ""}
                   routeName="Signup"
                 />
               </div>

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { QuestFormat, data } from "./data";
 import axios from "axios";
-import { links } from "../../../backendRoute";
+
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import Stepper from "@/components/Stepper";
@@ -22,7 +22,7 @@ export default function QnA() {
     const interval = setTimeout(() => {
       axios
         .post(
-          links.check,
+          process.env.check || "",
           {},
           {
             withCredentials: true, // Include cookies in the request
