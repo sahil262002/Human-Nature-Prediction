@@ -16,7 +16,7 @@ export default function Topbar() {
       setLoading(true);
       try {
         const response = await axios.post(
-          process.env.check || "",
+          process.env.NEXT_PUBLIC_CHECK || "",
           {},
           {
             withCredentials: true,
@@ -40,7 +40,7 @@ export default function Topbar() {
   const logouthandler = async () => {
     setLoading(true);
     try {
-      await axios.get(process.env.logout || "", { withCredentials: true });
+      await axios.get(process.env.NEXT_PUBLIC_LOGOUT || "", { withCredentials: true });
       setIsLoggedIn(false);
       router.push("/");
     } catch (error) {

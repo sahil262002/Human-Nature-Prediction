@@ -65,7 +65,7 @@ export default function Signup() {
               <div className="mt-2">
                 <ButtonBack
                   userInputs={data}
-                  link={process.env.signup || ""}
+                  link={process.env.NEXT_PUBLIC_SIGNUP || ""}
                   routeName="Signup"
                 />
               </div>

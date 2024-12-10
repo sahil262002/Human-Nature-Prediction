@@ -28,7 +28,7 @@ export default function User() {
     console.log(loading);
     try {
       axios
-        .get(`${process.env.userProfile || ""}`, {
+        .get(`${process.env.NEXT_PUBLIC_USER_PROFILE || ""}`, {
           withCredentials: true,
         })
         .then((response) => {

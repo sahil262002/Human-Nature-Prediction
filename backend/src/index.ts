@@ -20,7 +20,7 @@ app.use(
   "/api/v1/*",
   cors({
     credentials: true,
-    origin: ["https://human-nature-prediction.vercel.app"],
+    origin: ["https://human-nature-prediction-git-main-sahil262002s-projects.vercel.app","https://human-nature-prediction.vercel.app"],
   })
 );
 

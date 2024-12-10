@@ -58,7 +58,7 @@ export default function Pages({
     try {
       axios
         .post(
-          `${process.env.quest || ""}`,
+          `${process.env.NEXT_PUBLIC_QUEST || ""}`,
           {
             data: ans,
           },

@@ -22,7 +22,7 @@ export default function QnA() {
     const interval = setTimeout(() => {
       axios
         .post(
-          process.env.check || "",
+          process.env.NEXT_PUBLIC_CHECK || "",
           {},
           {
             withCredentials: true, // Include cookies in the request
